@@ -56,6 +56,20 @@ wss.on("connection", socket => {
                 data: null
             }));
             return;
+        } else if (msg.type == "spectate") {
+            let message = {
+                data: {
+                    tanks: db.tanks,
+                    boardSize: db.boardSize,
+                    myTankIdx: null
+                },
+                type: "spectate-good"
+            };
+            for (let i = 0; i < message.data.tanks.length; i++) {
+                message.data.tanks[i].splice(1, 1);
+            }
+            socket.send(JSON.stringify(message));
+            return;
         }
     });
 });
