@@ -1,0 +1,120 @@
+:root {
+    --ap-color: #19e787;
+    --hp-color: #ff0064;
+    --bg-color: #272822;
+    --pos-color: #be6510;
+    --rng-color: #7c7c15;
+}
+
+html,
+body {
+    margin: 0px;
+    padding: 0px;
+    margin-block-start: 0px;
+    padding-block-start: 0px;
+    margin-block-end: 0px;
+    padding-block-end: 0px;
+    margin-inline-start: 0px;
+    padding-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-end: 0px;
+    font-family: Consolas, 'Courier New', monospace
+}
+
+canvas {
+    display: block;
+}
+
+div#canvas-container {
+    grid-area: canvas;
+}
+
+div.tank-info {
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color);
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+div#mytank-info {
+    grid-area: mytank-info;
+}
+
+div#othertank-info {
+    grid-area: othertank-info;
+}
+
+main {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-areas: "mytank-info canvas othertank-info";
+    grid-template-columns: 1fr auto 1fr;
+}
+
+.stat-icon {
+    padding: 5px 3px 3px 5px;
+}
+
+.fa-bolt {
+    color: var(--ap-color);
+    border: 2px solid var(--ap-color);
+    border-radius: 100%;
+}
+
+.fa-heart {
+    color: var(--hp-color);
+}
+
+.fa-crosshairs {
+    color: var(--pos-color);
+}
+
+.fa-bullseye {
+    color: var(--rng-color);
+}
+
+div.playerName {
+    font-size: large;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+span.playerStat {
+    font-size: large;
+    color: white;
+}
+
+div.playerStatTableContainer {
+    width: fit-content;
+    /* margin-left: 50%;
+    transform: translate(-50%, 0%); */
+}
+
+table.playerStatTable {
+    text-align: left;
+}
+
+div.playerBioContainer {
+    width: 80%;
+    height: 300px;
+    margin-left: 50%;
+    transform: translate(-25%, 0%);
+}
+
+p.playerBio {
+    color: white;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+div#accountMenu {
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+}
