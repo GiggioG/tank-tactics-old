@@ -118,3 +118,53 @@ div#accountMenu {
     left: 0px;
     bottom: 0px;
 }
+
+div.modalBkg {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+div.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50vw;
+    height: 50vh;
+    background-color: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+div.modal-ipt-radio {
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+div.modal-ipt-number {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+div.modal-ipt-number input[type="number"] {
+    background-color: var(--bg-color);
+    color: white;
+}
+
+div.modal-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+button.modal-button {
+    width: min-content;
+}

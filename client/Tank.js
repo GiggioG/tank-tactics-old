@@ -1,13 +1,13 @@
 class Tank {
-    constructor(name, color, pos, bio) {
+    constructor(name, color, pos, hp, ap, range, bio) {
         this.name = name;
         this.color = color;
         this.pos = pos;
         this.pos.parent = this;
         this.bio = bio;
-        this.hp = 3;
-        this.ap = 1;
-        this.range = 2;
+        this.hp = hp;
+        this.ap = ap;
+        this.range = range;
         this.nonce = 0;
         this.prevNonce = -1;
         this.selected = false;
@@ -24,7 +24,7 @@ class Tank {
         rect(x + 5, y + 5, xInc - 10, yInc - 10);
         strokeWeight(1);
         stroke(0);
-        textSize(10);
+        textSize(12);
         fill("#19e787");
         text(`${this.ap}`, x + 5, y + 5 + textAscent());
         fill("#ff0064");
@@ -33,11 +33,11 @@ class Tank {
         text(`${this.range}`, x + 5 + (xInc - 10) / 2 - textWidth(`${this.range}`) / 2, y + 5 + yInc - 10 - 2);
     }
     info(mytank = false) {
-        if (this.nonce == this.prevNonce) { return; }
-        this.prevNonce = this.nonce;
-        let selector = (mytank ? "div#mytank-info" : "div#othertank-info");
-        this.show();
-        select(selector).elt.innerHTML = (`
+            if (this.nonce == this.prevNonce) { return; }
+            this.prevNonce = this.nonce;
+            let selector = (mytank ? "div#mytank-info" : "div#othertank-info");
+            this.show();
+            select(selector).elt.innerHTML = (`
         <div class="playerName" style="color: ${this.color}">${this.name}</div>
         <br>
         <div class="statIconContainer">
@@ -60,7 +60,14 @@ class Tank {
             </tr>
         </tb></table>
         </div>
-        <br>
+        ${this.name==srv.myUsername?`
+        <div>
+            <button onclick="move()" title="Move">🡆</button>
+            <button onclick="give()" title="Give AP">✋</button>
+            <button onclick="attack()" title="Attack">⚔️</button>
+            <button onclick="upgrade()" title="Upgrade range">◎</button>
+        </div>
+        `:""}
         <div class="playerBioContainer"><p class="playerBio">
         ${this.bio}
         </p></div>

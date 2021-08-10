@@ -17,10 +17,11 @@ async function setup() {
     } else {
         if (confirm("Spectate?")) {
             spectate();
+        } else {
+            let unm = prompt("Username?");
+            let pwd = prompt("Password?");
+            await srv.connect(`${unm}:${pwd}`);
         }
-        let unm = prompt("Username?");
-        let pwd = prompt("Password?");
-        await srv.connect(`${unm}:${pwd}`);
     }
     started = true;
     xInc = width / srv.boardSize;
@@ -96,4 +97,61 @@ function spectate() {
 function badAuth() {
     alert("Bad auth, try again.");
     location.reload();
+}
+
+function removeModal() {
+    document.querySelector("div.modalBkg").remove();
+}
+
+function _move() {
+    let dir;
+    document.querySelectorAll("input[type=radio]").forEach((e, i) => { if (e.checked) { dir = i; } });
+    let amount = document.querySelector("div.modal-ipt-number input").value;
+    srv.sock.send(JSON.stringify({
+        type: "update",
+        data: {
+            type: "move",
+            dir,
+            amount
+        }
+    }));
+    removeModal();
+}
+
+function move() {
+    let bkgDiv = document.createElement("div");
+    bkgDiv.className = "modalBkg";
+
+    let modalDiv = document.createElement("div");
+    modalDiv.className = "modal";
+    modalDiv.innerHTML = `
+    <div class="modal-ipt-radio">
+        <div><input name="direction" type="radio" checked=""><label>Up</label></div>
+        <div><input name="direction" type="radio"><label>Right</label></div>
+        <div><input name="direction" type="radio"><label>Down</label></div>
+        <div><input name="direction" type="radio"><label>Left</label></div>
+    </div>
+    <div class="modal-ipt-number">
+        <input type="number" value="1" min="1" max="${mytank.ap}">
+    </div>
+    <div class="modal-buttons">
+        <button class="modal-button" onclick="_move()">Move</button>
+        <button class="modal-button" onclick="removeModal()">Cancel</button>
+    </div>
+    `;
+
+    bkgDiv.appendChild(modalDiv);
+    document.body.appendChild(bkgDiv);
+}
+
+function give() {
+
+}
+
+function attack() {
+
+}
+
+function upgrade() {
+
 }

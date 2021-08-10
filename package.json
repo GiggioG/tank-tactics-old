@@ -19,6 +19,7 @@
   "author": "Gigo_G",
   "license": "ISC",
   "dependencies": {
+    "nodemon": "^2.0.12",
     "ws": "^8.0.0"
   }
 }

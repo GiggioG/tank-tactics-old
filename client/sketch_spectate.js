@@ -12,20 +12,10 @@ async function setup() {
     frameRate(30);
     srv = new Server();
     background(255);
-    if (localStorage.getItem("good-auth")) {
-        await srv.connect(localStorage.getItem("good-auth"))
-    } else {
-        if (confirm("Spectate?")) {
-            spectate();
-        }
-        let unm = prompt("Username?");
-        let pwd = prompt("Password?");
-        await srv.connect(`${unm}:${pwd}`);
-    }
+    await srv.spectate();
     started = true;
     xInc = width / srv.boardSize;
     yInc = height / srv.boardSize;
-    mytank = srv.tanks[srv.myTankIdx];
     return;
 }
 
@@ -42,10 +32,7 @@ function draw() {
     }
 
     fill(255, 255, 0, 100);
-    rect((mytank.pos.x - mytank.range) * xInc, (mytank.pos.y - mytank.range) * yInc,
-        (2 * mytank.range + 1) * xInc, (2 * mytank.range + 1) * yInc);
     srv.tanks.forEach(t => t.show());
-    mytank.info(true);
     if (selectedTankIdx != null) {
         srv.tanks[selectedTankIdx].info();
     } else {
@@ -61,7 +48,6 @@ function mousePressed() {
     let hit = false;
     for (let i = 0; i < srv.tanks.length; i++) {
         if (srv.tanks[i].pos.x == x && srv.tanks[i].pos.y == y) {
-            if (srv.myTankIdx == i) { break; }
             if (i == selectedTankIdx) {
                 selectedTankIdx = null;
                 srv.tanks[i].selected = false;
@@ -84,13 +70,8 @@ function mousePressed() {
     }
 }
 
-function logOut() {
-    localStorage.removeItem("good-auth");
-    location.reload();
-}
-
-function spectate() {
-    location.href = "/spectate.html"
+function logIn() {
+    location.href = "/";
 }
 
 function badAuth() {
