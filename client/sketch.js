@@ -99,6 +99,19 @@ function badAuth() {
     location.reload();
 }
 
+function makeModal() {
+    let bkgDiv = document.createElement("div");
+    bkgDiv.className = "modalBkg";
+
+    let modalDiv = document.createElement("div");
+    modalDiv.className = "modal";
+
+    bkgDiv.appendChild(modalDiv);
+    document.body.appendChild(bkgDiv);
+
+    return { modalDiv, bkgDiv };
+}
+
 function removeModal() {
     document.querySelector("div.modalBkg").remove();
 }
@@ -107,6 +120,8 @@ function _move() {
     let dir;
     document.querySelectorAll("input[type=radio]").forEach((e, i) => { if (e.checked) { dir = i; } });
     let amount = document.querySelector("div.modal-ipt-number input").value;
+    dir = Number(dir);
+    amount = Number(amount);
     srv.sock.send(JSON.stringify({
         type: "update",
         data: {
@@ -119,11 +134,7 @@ function _move() {
 }
 
 function move() {
-    let bkgDiv = document.createElement("div");
-    bkgDiv.className = "modalBkg";
-
-    let modalDiv = document.createElement("div");
-    modalDiv.className = "modal";
+    let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
     <div class="modal-ipt-radio">
         <div><input name="direction" type="radio" checked=""><label>Up</label></div>
@@ -139,19 +150,96 @@ function move() {
         <button class="modal-button" onclick="removeModal()">Cancel</button>
     </div>
     `;
+}
 
-    bkgDiv.appendChild(modalDiv);
-    document.body.appendChild(bkgDiv);
+function _give() {
+    let name;
+    document.querySelectorAll("input[type=radio]").forEach(e => { if (e.checked) { name = e.nextElementSibling.innerText; } });
+    let amount = document.querySelector("div.modal-ipt-number input").value;
+    amount = Number(amount);
+    srv.sock.send(JSON.stringify({
+        type: "update",
+        data: {
+            type: "give",
+            name,
+            amount
+        }
+    }));
+    removeModal();
 }
 
 function give() {
+    let { modalDiv, bkgDiv } = makeModal();
+    modalDiv.innerHTML = `
+    <div class="modal-ipt-radio">
+    ${srv.tanks.map(t => { if(t.name==mytank.name){return ``;} return `<div><input name="direction" type="radio"><label>${t.name}</label></div>` }).join("\n")}
+    </div>
+    <div class="modal-ipt-number">
+    <input type="number" value="1" min="1" max="${mytank.ap}">
+    </div>
+    <div class="modal-buttons">
+    <button class="modal-button" onclick="_give()">Give</button>
+    <button class="modal-button" onclick="removeModal()">Cancel</button>
+    </div>
+    `;
+    modalDiv.querySelector("input[name=direction]").checked = true;
+}
 
+function _attack(){
+    let name;
+    document.querySelectorAll("input[type=radio]").forEach(e => { if (e.checked) { name = e.nextElementSibling.innerText; } });
+    let amount = document.querySelector("div.modal-ipt-number input").value;
+    amount = Number(amount);
+    srv.sock.send(JSON.stringify({
+        type: "update",
+        data: {
+            type: "attack",
+            name,
+            amount
+        }
+    }));
+    removeModal();
 }
 
 function attack() {
+    let { modalDiv, bkgDiv } = makeModal();
+    modalDiv.innerHTML = `
+    <div class="modal-ipt-radio">
+    ${srv.tanks.map(t => { if(t.name==mytank.name){return``;}return `<div><input name="direction" type="radio"><label>${t.name}</label></div>` }).join("\n")}
+    </div>
+    <div class="modal-ipt-number">
+    <input type="number" value="1" min="1" max="${mytank.ap}">
+    </div>
+    <div class="modal-buttons">
+    <button class="modal-button" onclick="_attack()">Attack</button>
+    <button class="modal-button" onclick="removeModal()">Cancel</button>
+    </div>
+    `;
+    modalDiv.querySelector("input[name=direction]").checked = true;
+}
 
+function _upgrade(){
+    let amount = document.querySelector("div.modal-ipt-number input").value;
+    amount = Number(amount);
+    srv.sock.send(JSON.stringify({
+        type: "update",
+        data: {
+            type: "upgrade",
+            amount
+        }
+    }));
+    removeModal();
 }
 
 function upgrade() {
-
+    let { modalDiv, bkgDiv } = makeModal();
+    modalDiv.innerHTML = `
+    <div class="modal-ipt-number">
+    <input type="number" value="1" min="1" max="${Math.floor(mytank.ap/2)}">
+    </div>
+    <div class="modal-buttons">
+        <button class="modal-button" onclick="_upgrade()">Upgrade range</button>
+        <button class="modal-button" onclick="removeModal()">Cancel</button>
+    </div>
+    `;
 }

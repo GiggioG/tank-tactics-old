@@ -168,3 +168,8 @@ div.modal-buttons {
 button.modal-button {
     width: min-content;
 }
+
+.updateError-modal-h {
+    color: white;
+    text-align: center;
+}

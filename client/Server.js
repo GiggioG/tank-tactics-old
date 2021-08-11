@@ -24,7 +24,14 @@ class Server {
         if (msg.type == "update") {
             this.update(msg.data);
         } else if (msg.type == "update-error") {
-            alert(JSON.stringify(msg.data));
+            let { modalDiv, bkgDiv } = makeModal();
+            modalDiv.innerHTML = `
+                <h1 class="updateError-modal-h">Error while ${msg.data.action}:</h1>
+                <h3 class="updateError-modal-h">${msg.data.message}</h3>
+                <div class="modal-buttons">
+                    <button class="modal-button" onclick="removeModal()">OK</button>
+                </div>
+            `;
         }
     }
     async connect(auth) {

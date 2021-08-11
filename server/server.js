@@ -150,10 +150,10 @@ function update(username, update, sock) {
 
         if (user[5] < amount) { updateError(sock, "moving", "You do not have enough AP move that far."); return; }
 
-        if (dir == 0 && (user[3][1] - amount) < 0) { updateError(sock, "moving", "You can not go outside of the map."); return; }
-        if (dir == 1 && (user[3][0] + amount) >= db.boardSize) { updateError(sock, "moving", "You can not go outside of the map."); return; }
-        if (dir == 2 && (user[3][1] + amount) >= db.boardSize) { updateError(sock, "moving", "You can not go outside of the map."); return; }
-        if (dir == 3 && (user[3][0] - amount) < 0) { updateError(sock, "moving", "You can not go outside of the map."); return; }
+        if (dir == 0 && ((user[3][1] - amount) < 0)) { updateError(sock, "moving", "You can not go outside of the map."); return; }
+        if (dir == 1 && ((user[3][0] + amount) >= db.boardSize)) { updateError(sock, "moving", "You can not go outside of the map."); return; }
+        if (dir == 2 && ((user[3][1] + amount) >= db.boardSize)) { updateError(sock, "moving", "You can not go outside of the map."); return; }
+        if (dir == 3 && ((user[3][0] - amount) < 0)) { updateError(sock, "moving", "You can not go outside of the map."); return; }
 
         let [x, y] = user[3];
         let [xoff, yoff] = [
@@ -169,5 +169,52 @@ function update(username, update, sock) {
         }
 
         sendUpdate(username, user[4], user[5] - amount, x, y, user[6]);
+    } else if (update.type == "give") {
+        function dist(x1, y1, x2, y2) {
+            let dx = Math.abs(x1 - x2);
+            let dy = Math.abs(y1 - y2);
+            let d = (dx <= dy ? dx : dy);
+            let s = (dx >= dy ? dx : dy) - d;
+            return d + s;
+        }
+
+        const { name, amount } = update;
+
+        if (user[5] < amount) { updateError(sock, "giving AP", "You do not have enough AP to give that much AP."); return; }
+        if (user[0] == name) { updateError(sock, "giving AP", "You can't give yourself AP."); return; }
+
+        let other = getUser(name);
+        let [ux, uy] = user[3];
+        let [dx, dy] = other[3];
+        if (dist(ux, uy, dx, dy) > user[6]) { updateError(sock, "giving AP", `Player ${name} is out of you range.`); return; }
+
+        sendUpdate(username, user[4], user[5] - amount, ux, uy, user[6]);
+        sendUpdate(name, other[4], other[5] + amount, dx, dy, other[6]);
+    } else if (update.type == "attack") {
+        function dist(x1, y1, x2, y2) {
+            let dx = Math.abs(x1 - x2);
+            let dy = Math.abs(y1 - y2);
+            let d = (dx <= dy ? dx : dy);
+            let s = (dx >= dy ? dx : dy) - d;
+            return d + s;
+        }
+
+        const { name, amount } = update;
+
+        if (user[5] < amount) { updateError(sock, "attacking", "You do not have enough AP to attack that much."); return; }
+        if (user[0] == name) { updateError(sock, "attacking", "You can't attack yourself."); return; }
+
+        let other = getUser(name);
+        let [ux, uy] = user[3];
+        let [dx, dy] = other[3];
+        if (dist(ux, uy, dx, dy) > user[6]) { updateError(sock, "attacking", `Player ${name} is out of you range.`); return; }
+
+        sendUpdate(username, user[4], user[5] - amount, ux, uy, user[6]);
+        sendUpdate(name, other[4] - amount, other[5], dx, dy, other[6]);
+    } else if (update.type == "upgrade") {
+        const { amount } = update;
+        if (user[5] < amount * 2) { updateError(sock, "upgrading your range", "You do not have enough AP to upgrade your range that much."); return; }
+
+        sendUpdate(username, user[4], user[5] - amount * 2, user[3][0], user[3][1], user[6] + amount);
     }
 }
