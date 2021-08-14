@@ -154,6 +154,19 @@ div.modal-ipt-number {
     justify-content: space-around;
 }
 
+div.modal-ipt-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+div.modal-ipt-text input[type="text"],
+div.modal-ipt-text input[type="password"],
+div.modal-ipt-text label {
+    color: white;
+    background-color: var(--bg-color);
+}
+
 div.modal-ipt-number input[type="number"] {
     background-color: var(--bg-color);
     color: white;
@@ -166,7 +179,7 @@ div.modal-buttons {
 }
 
 button.modal-button {
-    width: min-content;
+    width: fit-content;
 }
 
 .updateError-modal-h {

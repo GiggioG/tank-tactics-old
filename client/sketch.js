@@ -15,13 +15,7 @@ async function setup() {
     if (localStorage.getItem("good-auth")) {
         await srv.connect(localStorage.getItem("good-auth"))
     } else {
-        if (confirm("Spectate?")) {
-            spectate();
-        } else {
-            let unm = prompt("Username?");
-            let pwd = prompt("Password?");
-            await srv.connect(`${unm}:${pwd}`);
-        }
+        await srv.connect(await logIn());
     }
     started = true;
     xInc = width / srv.boardSize;
@@ -84,6 +78,30 @@ function mousePressed() {
         selectedTankIdx = null;
     }
 }
+
+let logInResolve;
+
+function _logIn() {
+    let unm = document.querySelector("div.modal-ipt-text input[type=\"text\"]").value;
+    let pwd = document.querySelector("div.modal-ipt-text input[type=\"password\"]").value;
+    logInResolve(`${unm}:${pwd}`);
+    removeModal();
+    logInResolve = null;
+}
+const logIn = _ => new Promise(async(res, rej) => {
+    let { modalDiv, bkgDiv } = makeModal();
+    modalDiv.innerHTML = `
+        <div class="modal-ipt-text">
+            <label>Username</label><input id="loginUname" type="text">
+            <label>Password</label><input id="loginPwd" type="password">
+        </div>
+        <div class="modal-buttons">
+            <button class="modal-button" onclick="_logIn()">Log In</button>
+            <button class="modal-button" onclick="spectate()">Spectate</button>
+        </div>
+    `;
+    logInResolve = res;
+})
 
 function logOut() {
     localStorage.removeItem("good-auth");
