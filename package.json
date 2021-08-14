@@ -1,25 +1,25 @@
 {
-  "name": "tank_tactics",
-  "version": "1.0.0",
-  "description": "An implementation of the game from this talk: https://youtu.be/t9WMNuyjm4w",
-  "main": "server/server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
-    "tanks",
-    "tank",
-    "tank-tactics",
-    "tank_tactics",
-    "tactics",
-    "game",
-    "p5",
-    "Gigo_G"
-  ],
-  "author": "Gigo_G",
-  "license": "ISC",
-  "dependencies": {
-    "nodemon": "^2.0.12",
-    "ws": "^8.0.0"
-  }
+    "name": "tank_tactics",
+    "version": "1.0.0",
+    "description": "An implementation of the game from this talk: https://youtu.be/t9WMNuyjm4w",
+    "main": "server/server.js",
+    "scripts": {
+        "start": "node server/server.js"
+    },
+    "keywords": [
+        "tanks",
+        "tank",
+        "tank-tactics",
+        "tank_tactics",
+        "tactics",
+        "game",
+        "p5",
+        "Gigo_G"
+    ],
+    "author": "Gigo_G",
+    "license": "ISC",
+    "dependencies": {
+        "nodemon": "^2.0.12",
+        "ws": "^8.0.0"
+    }
 }
