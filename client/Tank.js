@@ -13,6 +13,7 @@ class Tank {
         this.selected = false;
     }
     show() {
+        if (this.hp <= 0) { return; }
         fill(this.color);
         stroke(255);
         let xInc = width / srv.boardSize;
@@ -37,40 +38,47 @@ class Tank {
             this.prevNonce = this.nonce;
             let selector = (mytank ? "div#mytank-info" : "div#othertank-info");
             this.show();
+            console.log(srv.myUsername);
             select(selector).elt.innerHTML = (`
-        <div class="playerName" style="color: ${this.color}">${this.name}</div>
-        <br>
-        <div class="statIconContainer">
-        ${"<i class=\"stat-icon fas fa-bolt\"></i>".repeat(this.ap)}
-        </div>
-        <br>
-        <div class="statIconContainer">
-        ${"<i class=\"stat-icon fas fa-heart\"></i>".repeat(this.hp)}
-        </div>
-        <br>
-        <div class="playerStatTableContainer">
-        <table class="playerStatTable"><tb>
-            <tr>
-                <td> <i class="stat-icon fas fa-crosshairs"></i> </td>
-                <td> <span class="playerStat">${this.pos.x}, ${this.pos.y}</span> </td>
-            </tr>
-            <tr>
-                <td> <i class="stat-icon fas fa-bullseye"></i> </td>
-                <td> <span class="playerStat">${this.range}</span> </td>
-            </tr>
-        </tb></table>
-        </div>
-        ${this.name==srv.myUsername?`
-        <div>
-            <button onclick="move()" title="Move">🡆</button>
-            <button onclick="give()" title="Give AP">✋</button>
-            <button onclick="attack()" title="Attack">⚔️</button>
-            <button onclick="upgrade()" title="Upgrade range">◎</button>
-        </div>
-        `:""}
-        <div class="playerBioContainer"><p class="playerBio">
-        ${this.bio}
-        </p></div>
-        `);
+                <div class="playerName" style="color: ${this.color}">${this.name}</div>
+                ${srv.myTankDead && (this.name == srv.myUsername)?"":`
+                <br>
+                <div class="statIconContainer">
+                ${"<i class=\"stat-icon fas fa-bolt\"></i>".repeat(this.ap)}
+                </div>
+                <br>
+                <div class="statIconContainer">
+                ${"<i class=\"stat-icon fas fa-heart\"></i>".repeat(this.hp)}
+                </div>
+                <br>
+                <div class="playerStatTableContainer">
+                <table class="playerStatTable"><tb>
+                    <tr>
+                        <td> <i class="stat-icon fas fa-crosshairs"></i> </td>
+                        <td> <span class="playerStat">${this.pos.x}, ${this.pos.y}</span> </td>
+                    </tr>
+                    <tr>
+                        <td> <i class="stat-icon fas fa-bullseye"></i> </td>
+                        <td> <span class="playerStat">${this.range}</span> </td>
+                    </tr>
+                </tb></table>
+                </div>
+                `}
+                ${this.name==srv.myUsername?(srv.myTankDead?`
+                <div>
+                    <button onclick="vote()" title="Vote in the Jury">🗳 Vote</button>
+                </div>
+                `:`
+                <div>
+                    <button onclick="move()" title="Move">🡆</button>
+                    <button onclick="give()" title="Give AP">✋</button>
+                    <button onclick="attack()" title="Attack">⚔️</button>
+                    <button onclick="upgrade()" title="Upgrade range">◎</button>
+                </div>
+                `):""}
+                <div class="playerBioContainer"><p class="playerBio">
+                ${this.bio}
+                </p></div>
+            `);
     }
 }

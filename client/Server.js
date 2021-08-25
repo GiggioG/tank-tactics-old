@@ -2,9 +2,11 @@ class Server {
     constructor() {
         this.tanks_real = [];
         this.tanks = [];
-        this.myTankIdx = undefined;
+        this.myTankIdx = null;
+        this.myUsername = null;
         this.sock = null;
         this.boardSize = null;
+        this.myTankDead = false;
     }
     update(data) {
         let thetank;
@@ -23,6 +25,18 @@ class Server {
         console.log(msg);
         if (msg.type == "update") {
             this.update(msg.data);
+        } else if (msg.type == "update-death") {
+            removeModal();
+            this.tanks = this.tanks.filter(t => t.name != msg.data.user);
+            this.myTankDead = true;
+            if (selectedTankIdx != null) {
+                let idx = this.tanks.findIndex(t => t.name == msg.data.user);
+                if (idx < selectedTankIdx) {
+                    selectedTankIdx--;
+                } else if (idx == selectedTankIdx) {
+                    selectedTankIdx = null;
+                }
+            }
         } else if (msg.type == "update-error") {
             let { modalDiv, bkgDiv } = makeModal();
             modalDiv.innerHTML = `
@@ -60,7 +74,8 @@ class Server {
                 }));
             });
             this.myUsername = auth.split(':')[0];
-            this.myTankIdx = data.data.myTankIdx;
+            this.myTankIdx = data.data.tanks.findIndex(t => t[0] == this.myUsername);
+            this.myTankDead = this.tanks[this.myTankIdx].hp <= 0;
             this.boardSize = data.data.boardSize;
         } else if (data.type == "auth-bad") {
             badAuth();

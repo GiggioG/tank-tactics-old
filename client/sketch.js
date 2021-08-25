@@ -36,9 +36,11 @@ function draw() {
         line(0, i, width, i);
     }
 
-    fill(255, 255, 0, 100);
-    rect((mytank.pos.x - mytank.range) * xInc, (mytank.pos.y - mytank.range) * yInc,
-        (2 * mytank.range + 1) * xInc, (2 * mytank.range + 1) * yInc);
+    if (!srv.myTankDead) {
+        fill(255, 255, 0, 100);
+        rect((mytank.pos.x - mytank.range) * xInc, (mytank.pos.y - mytank.range) * yInc,
+            (2 * mytank.range + 1) * xInc, (2 * mytank.range + 1) * yInc);
+    }
     srv.tanks.forEach(t => t.show());
     mytank.info(true);
     if (selectedTankIdx != null) {
@@ -48,11 +50,13 @@ function draw() {
     }
 }
 
-function mousePressed() {
+function mousePressed(event) {
+    console.log(event);
+    console.log(canvas);
+    console.log(event.target != canvas.canvas);
+    if (event.target != canvas.canvas) { return; }
     let x = Math.floor(mouseX / xInc);
     let y = Math.floor(mouseY / yInc);
-    if (x < 0 || x >= srv.boardSize) { return; }
-    if (y < 0 || y >= srv.boardSize) { return; }
     let hit = false;
     for (let i = 0; i < srv.tanks.length; i++) {
         if (srv.tanks[i].pos.x == x && srv.tanks[i].pos.y == y) {
@@ -113,8 +117,14 @@ function spectate() {
 }
 
 function badAuth() {
-    alert("Bad auth, try again.");
-    location.reload();
+    let { modalDiv, bkgDiv } = makeModal();
+    modalDiv.innerHTML = `
+        <h1 class="updateError-modal-h">Wrong username or password.</h1>
+        <h3 class="updateError-modal-h">Try again!</h3>
+        <div class="modal-buttons">
+            <button class="modal-button" onclick="location.reload();">OK</button>
+        </div>
+    `;
 }
 
 function makeModal() {
@@ -131,6 +141,7 @@ function makeModal() {
 }
 
 function removeModal() {
+    if (!document.querySelector("div.modalBkg")) { return; }
     document.querySelector("div.modalBkg").remove();
 }
 

@@ -34,6 +34,7 @@ wss.on("connection", socket => {
             if (userIdx >= 0) {
                 socket.user = msg.data.split(':')[0];
                 socks.push(socket);
+                db.tanks = db.tanks.filter(e => ((e[4] > 0) || (e[0] == socket.user)));
                 let message = {
                     data: {
                         tanks: db.tanks,
@@ -55,6 +56,7 @@ wss.on("connection", socket => {
             return;
         } else if (msg.type == "spectate") {
             socks.push(socket);
+            db.tanks = db.tanks.filter(e => e[4] > 0);
             let message = {
                 data: {
                     tanks: db.tanks,
@@ -142,10 +144,21 @@ function sendUpdate(user, hp, ap, x, y, range) {
     fs.writeFileSync("server/db.json", JSON.stringify(db));
 }
 
+function sendDeath(user) {
+    let msg = JSON.stringify({
+        type: "update-death",
+        data: {
+            user
+        }
+    });
+    socks.forEach(s => s.send(msg));
+}
+
 function update(username, update, sock) {
     const db = JSON.parse(fs.readFileSync("server/db.json"));
     const user = getUser(username);
     if (update.type == "move") {
+        if (user[4] <= 0) { updateError(sock, "moving", "You can't move when you're dead."); return; }
         const { dir, amount } = update;
 
         if (user[5] < amount) { updateError(sock, "moving", "You do not have enough AP move that far."); return; }
@@ -165,11 +178,14 @@ function update(username, update, sock) {
         for (let i = 0; i < amount; i++) {
             x += xoff;
             y += yoff;
-            if (getUserAt(x, y) != null) { updateError(sock, "moving", "You can't move through other players."); return; }
+            const obstruser = getUserAt(x, y);
+            if (obstruser != null && obstruser[4] > 0) { updateError(sock, "moving", "You can't move through other players."); return; }
         }
 
         sendUpdate(username, user[4], user[5] - amount, x, y, user[6]);
     } else if (update.type == "give") {
+        if (user[4] <= 0) { updateError(sock, "giving AP", "You can't give AP when you're dead."); return; }
+
         function dist(x1, y1, x2, y2) {
             let dx = Math.abs(x1 - x2);
             let dy = Math.abs(y1 - y2);
@@ -184,6 +200,8 @@ function update(username, update, sock) {
         if (user[0] == name) { updateError(sock, "giving AP", "You can't give yourself AP."); return; }
 
         let other = getUser(name);
+        if (!other) { updateError(sock, "giving AP", `Player ${name} does not exist.`); return; }
+        if (other[4] <= 0) { updateError(sock, "giving AP", "You can't give AP to a dead player."); return; }
         let [ux, uy] = user[3];
         let [dx, dy] = other[3];
         if (dist(ux, uy, dx, dy) > user[6]) { updateError(sock, "giving AP", `Player ${name} is out of you range.`); return; }
@@ -191,6 +209,8 @@ function update(username, update, sock) {
         sendUpdate(username, user[4], user[5] - amount, ux, uy, user[6]);
         sendUpdate(name, other[4], other[5] + amount, dx, dy, other[6]);
     } else if (update.type == "attack") {
+        if (user[4] <= 0) { updateError(sock, "attacking", "You can't attack when you're dead."); return; }
+
         function dist(x1, y1, x2, y2) {
             let dx = Math.abs(x1 - x2);
             let dy = Math.abs(y1 - y2);
@@ -205,16 +225,27 @@ function update(username, update, sock) {
         if (user[0] == name) { updateError(sock, "attacking", "You can't attack yourself."); return; }
 
         let other = getUser(name);
+        if (!other) { updateError(sock, "attacking", `Player ${name} does not exist.`); return; }
+        if (other[4] <= 0) { updateError(sock, "attacking", "You can't attack an already dead player."); return; }
         let [ux, uy] = user[3];
         let [dx, dy] = other[3];
         if (dist(ux, uy, dx, dy) > user[6]) { updateError(sock, "attacking", `Player ${name} is out of you range.`); return; }
 
         sendUpdate(username, user[4], user[5] - amount, ux, uy, user[6]);
         sendUpdate(name, other[4] - amount, other[5], dx, dy, other[6]);
+        if (other[4] - amount <= 0) {
+            sendDeath(name);
+        }
     } else if (update.type == "upgrade") {
+        if (user[4] <= 0) { updateError(sock, "upgrading your range", "You can't upgrade your range when you're dead."); return; }
         const { amount } = update;
         if (user[5] < amount * 2) { updateError(sock, "upgrading your range", "You do not have enough AP to upgrade your range that much."); return; }
 
         sendUpdate(username, user[4], user[5] - amount * 2, user[3][0], user[3][1], user[6] + amount);
+    } else if (update.type == "vote") {
+        if (user[4] > 0) { updateError(sock, "voting", "You can't vote when you're alive."); return; }
+
     }
 }
+
+console.log("Server running.");
