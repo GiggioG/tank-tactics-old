@@ -4,7 +4,10 @@
     "description": "An implementation of the game from this talk: https://youtu.be/t9WMNuyjm4w",
     "main": "server/server.js",
     "scripts": {
-        "start": "node server/server.js"
+        "start": "node server/server.js",
+        "eraseGame": "scripts\\erasegame.bat",
+        "resetGame": "scripts\\resetgame.bat",
+        "createGame": "node scripts/creategame.js"
     },
     "keywords": [
         "tanks",
@@ -20,6 +23,6 @@
     "license": "ISC",
     "dependencies": {
         "nodemon": "^2.0.12",
-        "ws": "^8.0.0"
+        "ws": "^8.2.0"
     }
 }

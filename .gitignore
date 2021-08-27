@@ -1,3 +1,4 @@
 node_modules
 server/db.json
+server/db_initial.json
 package-lock.json

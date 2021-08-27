@@ -2,6 +2,12 @@ const ws = require("ws");
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const { exit } = require("process");
+if (!fs.existsSync("server/db.json") || !fs.existsSync("server/db_initial.json")) {
+    console.error("You must first create a game in order to start the game server.");
+    exit();
+}
+const gameDayMillis = JSON.parse(fs.readFileSync("server/db.json")).gameDayMillis;
 let websrv = http.createServer((req, res) => {
     if (req.url == '/') { req.url = "/index.html" }
     if (!fs.existsSync('./client/' + path.posix.normalize(req.url))) {
@@ -18,7 +24,7 @@ websrv.listen(8080);
 let wss = new ws.Server({
     port: 9090
 });
-let socks = [];
+
 wss.on("connection", socket => {
     socket.on("message", async rawMsg => {
         let msg = JSON.parse(rawMsg);
@@ -33,7 +39,6 @@ wss.on("connection", socket => {
             }
             if (userIdx >= 0) {
                 socket.user = msg.data.split(':')[0];
-                socks.push(socket);
                 db.tanks = db.tanks.filter(e => ((e[4] > 0) || (e[0] == socket.user)));
                 let message = {
                     data: {
@@ -55,7 +60,6 @@ wss.on("connection", socket => {
             }));
             return;
         } else if (msg.type == "spectate") {
-            socks.push(socket);
             db.tanks = db.tanks.filter(e => e[4] > 0);
             let message = {
                 data: {
@@ -77,6 +81,25 @@ wss.on("connection", socket => {
     });
 });
 
+function giveAliveAP() {
+    let db = JSON.parse(fs.readFileSync("server/db.json"));
+    db.tanks.forEach(el => {
+        if (el[4] > 0) {
+            sendUpdate(el[0], el[4], el[5] + 1, el[3][0], el[3][1], el[6]);
+        }
+    });
+}
+
+{
+    let then = new Date(JSON.parse(fs.readFileSync("server/db.json")).gameStartedDatetimeMillis);
+    let now = new Date();
+    let delay = gameDayMillis - ((now - then) % gameDayMillis);
+    setTimeout(() => {
+        giveAliveAP();
+        setInterval(giveAliveAP, gameDayMillis);
+    }, delay);
+}
+
 function getUserIdx(user) {
     const db = JSON.parse(fs.readFileSync("server/db.json"));
     for (let i = 0; i < db.tanks.length; i++) {
@@ -92,9 +115,9 @@ function getUser(user) {
 }
 
 function getUserSock(user) {
-    for (let i = 0; i < socks.length; i++) {
-        if (socks[i].user == user) {
-            return socks[i];
+    for (let i = 0; i < wss.clients.length; i++) {
+        if (wss.clients[i].user == user) {
+            return wss.clients[i];
         }
     }
     return null;
@@ -132,7 +155,7 @@ function sendUpdate(user, hp, ap, x, y, range) {
             range
         }
     });
-    socks.forEach(s => s.send(msg));
+    wss.clients.forEach(s => s.send(msg));
 
     let db = JSON.parse(fs.readFileSync("server/db.json"));
     let uidx = getUserIdx(user);
@@ -151,7 +174,7 @@ function sendDeath(user) {
             user
         }
     });
-    socks.forEach(s => s.send(msg));
+    wss.clients.forEach(s => s.send(msg));
 }
 
 function update(username, update, sock) {
