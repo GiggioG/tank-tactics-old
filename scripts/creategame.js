@@ -31,8 +31,8 @@ const generateCoords = (size, n) => {
     for (let i = 1; i <= square; i++) {
         for (let j = 1; j <= square; j++) {
             possibleCoords.push([
-                Math.floor(size / (square + 1)) * i,
-                Math.floor(size / (square + 1)) * j
+                Math.round((size - square) / (square + 1)) * j + (j - 1),
+                Math.round((size - square) / (square + 1)) * i + (i - 1)
             ]);
         }
     }
