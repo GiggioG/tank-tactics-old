@@ -77,8 +77,9 @@ class Server {
             this.myTankIdx = data.data.tanks.findIndex(t => t[0] == this.myUsername);
             this.myTankDead = this.tanks[this.myTankIdx].hp <= 0;
             this.boardSize = data.data.boardSize;
+            started = true;
         } else if (data.type == "auth-bad") {
-            badAuth();
+            badAuth(auth);
         }
         return;
     }

@@ -17,7 +17,6 @@ async function setup() {
     } else {
         await srv.connect(await logIn());
     }
-    started = true;
     xInc = width / srv.boardSize;
     yInc = height / srv.boardSize;
     mytank = srv.tanks[srv.myTankIdx];
@@ -51,9 +50,6 @@ function draw() {
 }
 
 function mousePressed(event) {
-    console.log(event);
-    console.log(canvas);
-    console.log(event.target != canvas.canvas);
     if (event.target != canvas.canvas) { return; }
     let x = Math.floor(mouseX / xInc);
     let y = Math.floor(mouseY / yInc);
@@ -116,9 +112,14 @@ function spectate() {
     location.href = "/spectate.html"
 }
 
-function badAuth() {
-    let { modalDiv, bkgDiv } = makeModal();
+function badAuth(auth) {
+    if (localStorage.getItem("good-auth") == auth) {
+        localStorage.removeItem("good-auth");
+        location.reload();
+        return 0;
+    }
     localStorage.removeItem("good-auth");
+    let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
         <h1 class="updateError-modal-h">Wrong username or password.</h1>
         <h3 class="updateError-modal-h">Try again!</h3>
