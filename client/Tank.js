@@ -76,9 +76,7 @@ class Tank {
                     <button onclick="upgrade()" title="Upgrade range">◎</button>
                 </div>
                 `):""}
-                <div class="playerBioContainer"><p class="playerBio">
-                ${this.bio}
-                </p></div>
+                <div class="playerBioContainer"><p class="playerBio">${this.bio}</p></div>
             `);
     }
 }

@@ -118,6 +118,7 @@ function spectate() {
 
 function badAuth() {
     let { modalDiv, bkgDiv } = makeModal();
+    localStorage.removeItem("good-auth");
     modalDiv.innerHTML = `
         <h1 class="updateError-modal-h">Wrong username or password.</h1>
         <h3 class="updateError-modal-h">Try again!</h3>
