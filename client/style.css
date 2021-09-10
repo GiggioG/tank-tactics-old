@@ -223,6 +223,10 @@ span.player-vote.player-vote-noone::after {
     animation: blinkColor 500ms steps(2, end) infinite;
 }
 
+.blinkColor {
+    animation: blinkColor 500ms steps(2, end) infinite;
+}
+
 button.vote-button-noone {
     background-color: white;
     animation: blinkBkg 500ms steps(2, end) infinite;

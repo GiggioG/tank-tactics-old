@@ -93,6 +93,10 @@ class Server {
             if (this.myTankDead) {
                 this.myVote = data.data.vote;
             }
+            this.winner = data.data.winner;
+            if (this.winner != null) {
+                this.winnerIdx = this.tanks.findIndex(t => t.name == this.winner);
+            }
             started = true;
         } else if (data.type == "auth-bad") {
             badAuth(auth);
@@ -125,6 +129,10 @@ class Server {
             });
             this.myTankIdx = null;
             this.boardSize = data.data.boardSize;
+            this.winner = data.data.winner;
+            if (this.winner != null) {
+                this.winnerIdx = this.tanks.findIndex(t => t.name == this.winner);
+            }
         } else {
             location.refresh();
         }

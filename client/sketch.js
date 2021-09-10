@@ -41,6 +41,7 @@ function draw() {
             (2 * mytank.range + 1) * xInc, (2 * mytank.range + 1) * yInc);
     }
     srv.tanks.forEach(t => t.show());
+    if (srv.winner) { selectedTankIdx = srv.winnerIdx; }
     mytank.info(true);
     if (selectedTankIdx != null) {
         srv.tanks[selectedTankIdx].info();
@@ -50,6 +51,7 @@ function draw() {
 }
 
 function mousePressed(event) {
+    if (srv.winner) { return; }
     if (event.target != canvas.canvas) { return; }
     let x = Math.floor(mouseX / xInc);
     let y = Math.floor(mouseY / yInc);
@@ -165,6 +167,7 @@ function _move() {
 }
 
 function move() {
+    if (srv.winner) { return; }
     if (mytank.ap == 0) {
         okTextModal("Not enough AP.", "You need at least 1 AP to move.");
         return;
@@ -211,6 +214,7 @@ function _give() {
 }
 
 function give() {
+    if (srv.winner) { return; }
     let possibleT = srv.tanks.filter(t => (!(t.name == mytank.name || distance(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range)));
     if (possibleT.length == 0) {
         okTextModal("No players.", "There are no players in your range.");
@@ -255,6 +259,7 @@ function _attack() {
 }
 
 function attack() {
+    if (srv.winner) { return; }
     let possibleT = srv.tanks.filter(t => (!(t.name == mytank.name || distance(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range)));
     if (possibleT.length == 0) {
         okTextModal("No players.", "There are no players in your range.");
@@ -295,6 +300,7 @@ function _upgrade() {
 }
 
 function upgrade() {
+    if (srv.winner) { return; }
     if (mytank.ap < 2) {
         okTextModal("Not enough AP.", "You need at least 2 AP to upgrade your range.");
         return;
@@ -326,6 +332,7 @@ function _vote() {
 }
 
 function vote() {
+    if (srv.winner) { return; }
     let possibleT = srv.tanks.filter(t => (!(t.name == mytank.name)));
     if (possibleT.length == 0) {
         okTextModal("No players found.", "There are none alive players left.");

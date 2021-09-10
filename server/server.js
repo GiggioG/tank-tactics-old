@@ -29,6 +29,7 @@ wss.on("connection", socket => {
     socket.on("message", async rawMsg => {
         let msg = JSON.parse(rawMsg);
         let db = JSON.parse(fs.readFileSync("server/db.json"));
+        let winner = getWinner();
         if (msg.type == "auth") {
             let userIdx = -1;
             for (let i = 0; i < db.tanks.length; i++) {
@@ -44,16 +45,18 @@ wss.on("connection", socket => {
                     data: {
                         tanks: db.tanks,
                         boardSize: db.boardSize,
-                        myTankIdx: userIdx
+                        myTankIdx: userIdx,
+                        winner
                     },
                     type: "auth-good"
                 };
                 for (let i = 0; i < message.data.tanks.length; i++) {
                     message.data.tanks[i].splice(1, 1);
+                } {
+                    let db2 = JSON.parse(fs.readFileSync("server/db.json"));
+                    message.data.vote = db2.votes[db2.tanks[userIdx][0]] || null;
                 }
-                if (db.tanks[userIdx][3] == 0) {
-                    message.data.vote = db.votes[db.tanks[userIdx][0]] || null;
-                }
+                if (winner) { message.data.winner = winner; }
                 socket.send(JSON.stringify(message));
                 return;
             }
@@ -68,7 +71,8 @@ wss.on("connection", socket => {
                 data: {
                     tanks: db.tanks,
                     boardSize: db.boardSize,
-                    myTankIdx: null
+                    myTankIdx: null,
+                    winner
                 },
                 type: "spectate-good"
             };
@@ -84,7 +88,18 @@ wss.on("connection", socket => {
     });
 });
 
+function getWinner() {
+    let db = JSON.parse(fs.readFileSync("server/db.json"));
+    let alives = [];
+    db.tanks.forEach(t => {
+        if (t[4] > 0) { alives.push(t[0]); }
+    });
+    if (alives.length == 1) { return alives[0]; }
+    return null;
+}
+
 function giveAliveAP() {
+    if (getWinner()) { return; }
     let db = JSON.parse(fs.readFileSync("server/db.json"));
     db.tanks.forEach(el => {
         if (el[4] > 0) {
@@ -207,6 +222,11 @@ function confirmVote(sock, candidate) {
 function update(username, update, sock) {
     const db = JSON.parse(fs.readFileSync("server/db.json"));
     const user = getUser(username);
+    let winner = getWinner();
+    if (winner) {
+        updateError(sock, "doing something.", `${winner} won. This means that the game ended. You can't do anything after the game ended.`);
+        return;
+    }
     if (update.type == "move") {
         if (user[4] <= 0) { updateError(sock, "moving", "You can't move when you're dead."); return; }
         const { dir, amount } = update;
