@@ -315,14 +315,11 @@ function _vote() {
     let name;
     document.querySelectorAll("input[type=radio]").forEach(e => { if (e.checked) { name = e.nextElementSibling.innerText; } });
     if (name == undefined) { return; }
-    let amount = document.querySelector("div.modal-ipt-number input").value;
-    amount = Number(amount);
     srv.sock.send(JSON.stringify({
         type: "update",
         data: {
-            type: "attack",
-            name,
-            amount
+            type: "vote",
+            name
         }
     }));
     removeModal();

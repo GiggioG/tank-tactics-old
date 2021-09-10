@@ -144,8 +144,14 @@ div.modal {
 div.modal-ipt-radio {
     color: white;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-around;
+}
+
+div.modal-ipt-radio div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 div.modal-ipt-number {
