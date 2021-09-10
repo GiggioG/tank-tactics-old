@@ -194,6 +194,7 @@ function dist(x1, y1, x2, y2) {
 function _give() {
     let name;
     document.querySelectorAll("input[type=radio]").forEach(e => { if (e.checked) { name = e.nextElementSibling.innerText; } });
+    if (name == undefined) { return; }
     let amount = document.querySelector("div.modal-ipt-number input").value;
     amount = Number(amount);
     srv.sock.send(JSON.stringify({
@@ -227,6 +228,7 @@ function give() {
 function _attack(){
     let name;
     document.querySelectorAll("input[type=radio]").forEach(e => { if (e.checked) { name = e.nextElementSibling.innerText; } });
+    if (name == undefined){return;}
     let amount = document.querySelector("div.modal-ipt-number input").value;
     amount = Number(amount);
     srv.sock.send(JSON.stringify({
