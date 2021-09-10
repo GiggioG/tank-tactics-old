@@ -101,6 +101,7 @@ function giveAliveAP() {
     }
     for (let candidate in candidates) {
         if (candidates[candidate] >= 3) {
+            console.log(candidate);
             const cT = getUser(candidate);
             sendUpdate(cT[0], cT[4], cT[5] + 1, cT[3][0], cT[3][1], cT[6]);
         }
