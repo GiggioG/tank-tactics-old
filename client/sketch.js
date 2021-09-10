@@ -121,8 +121,8 @@ function badAuth(auth) {
     localStorage.removeItem("good-auth");
     let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
-        <h1 class="updateError-modal-h">Wrong username or password.</h1>
-        <h3 class="updateError-modal-h">Try again!</h3>
+        <h1 class="modal-h">Wrong username or password.</h1>
+        <h3 class="modal-h">Try again!</h3>
         <div class="modal-buttons">
             <button class="modal-button" onclick="location.reload();">OK</button>
         </div>
@@ -165,6 +165,10 @@ function _move() {
 }
 
 function move() {
+    if (mytank.ap == 0) {
+        okTextModal("Not enough AP.", "You need at least 1 AP to move.");
+        return;
+    }
     let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
     <div class="modal-ipt-radio">
@@ -207,10 +211,20 @@ function _give() {
 }
 
 function give() {
+    let possibleT = srv.tanks.filter(t => (!(t.name == mytank.name || distance(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range)));
+    if (possibleT.length == 0) {
+        okTextModal("No players.", "There are no players in your range.");
+        return;
+    }
+    if (mytank.ap == 0) {
+        okTextModal("Not enough AP.", "You need at least 1 AP to give AP.");
+        return;
+    }
     let { modalDiv, bkgDiv } = makeModal();
+    let possibleHTML = possibleT.map(t => `<div><input name="radioOption" type="radio"><label>${t.name}</label></div>`).join("\n");
     modalDiv.innerHTML = `
     <div class="modal-ipt-radio">
-    ${srv.tanks.map(t => { if(t.name==mytank.name || distance(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range){return ``;} return `<div><input name="radioOption" type="radio"><label>${t.name}</label></div>` }).join("\n")}
+    ${possibleHTML}
     </div>
     <div class="modal-ipt-number">
     <input type="number" value="1" min="1" max="${mytank.ap}">
@@ -223,10 +237,10 @@ function give() {
     modalDiv.querySelector("input[name=radioOption]").checked = true;
 }
 
-function _attack(){
+function _attack() {
     let name;
     document.querySelectorAll("input[type=radio]").forEach(e => { if (e.checked) { name = e.nextElementSibling.innerText; } });
-    if (name == undefined){return;}
+    if (name == undefined) { return; }
     let amount = document.querySelector("div.modal-ipt-number input").value;
     amount = Number(amount);
     srv.sock.send(JSON.stringify({
@@ -241,10 +255,20 @@ function _attack(){
 }
 
 function attack() {
+    let possibleT = srv.tanks.filter(t => (!(t.name == mytank.name || distance(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range)));
+    if (possibleT.length == 0) {
+        okTextModal("No players.", "There are no players in your range.");
+        return;
+    }
+    if (mytank.ap == 0) {
+        okTextModal("Not enough AP.", "You need at least 1 AP to attack.");
+        return;
+    }
     let { modalDiv, bkgDiv } = makeModal();
+    let possibleHTML = possibleT.map(t => `<div><input name="radioOption" type="radio"><label>${t.name}</label></div>`).join("\n");
     modalDiv.innerHTML = `
     <div class="modal-ipt-radio">
-    ${srv.tanks.map(t => { if(t.name==mytank.name || distance(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range){return``;}return `<div><input name="radioOption" type="radio"><label>${t.name}</label></div>` }).join("\n")}
+    ${possibleHTML}
     </div>
     <div class="modal-ipt-number">
     <input type="number" value="1" min="1" max="${mytank.ap}">
@@ -257,7 +281,7 @@ function attack() {
     modalDiv.querySelector("input[name=radioOption]").checked = true;
 }
 
-function _upgrade(){
+function _upgrade() {
     let amount = document.querySelector("div.modal-ipt-number input").value;
     amount = Number(amount);
     srv.sock.send(JSON.stringify({
@@ -271,6 +295,10 @@ function _upgrade(){
 }
 
 function upgrade() {
+    if (mytank.ap < 2) {
+        okTextModal("Not enough AP.", "You need at least 2 AP to upgrade your range.");
+        return;
+    }
     let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
     <div class="modal-ipt-number">
@@ -283,10 +311,10 @@ function upgrade() {
     `;
 }
 
-function _vote(){
+function _vote() {
     let name;
     document.querySelectorAll("input[type=radio]").forEach(e => { if (e.checked) { name = e.nextElementSibling.innerText; } });
-    if (name == undefined){return;}
+    if (name == undefined) { return; }
     let amount = document.querySelector("div.modal-ipt-number input").value;
     amount = Number(amount);
     srv.sock.send(JSON.stringify({
@@ -300,11 +328,17 @@ function _vote(){
     removeModal();
 }
 
-function vote(){
+function vote() {
+    let possibleT = srv.tanks.filter(t => (!(t.name == mytank.name)));
+    if (possibleT.length == 0) {
+        okTextModal("No players found.", "There are none alive players left.");
+        return;
+    }
+    let possibleHTML = possibleT.map(t => `<div><input name="radioOption" type="radio"><label>${t.name}</label></div>`).join("\n");
     let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
     <div class="modal-ipt-radio">
-    ${srv.tanks.map(t => { if(t.name==mytank.name){return``;}return `<div><input name="radioOption" type="radio"><label>${t.name}</label></div>` }).join("\n")}
+    ${possibleHTML}
     </div>
     <div class="modal-buttons">
     <button class="modal-button" onclick="_vote()">Vote</button>
@@ -312,4 +346,15 @@ function vote(){
     </div>
     `;
     modalDiv.querySelector("input[name=radioOption]").checked = true;
+}
+
+function okTextModal(title, text) {
+    let { modalDiv, bkgDiv } = makeModal();
+    modalDiv.innerHTML = `
+        <h1 class="modal-h">${title}</h1>
+        <h3 class="modal-h">${text}</h3>
+        <div class="modal-buttons">
+            <button class="modal-button" onclick="removeModal()">OK</button>
+        </div>
+    `;
 }
