@@ -26,6 +26,7 @@ class Server {
         if (msg.type == "update") {
             this.update(msg.data);
         } else if (msg.type == "update-death") {
+            if (msg.data.user == this.myUsername) { location.reload(); }
             removeModal();
             this.tanks = this.tanks.filter(t => t.name != msg.data.user);
             this.myTankDead = true;

@@ -183,6 +183,14 @@ function move() {
     `;
 }
 
+function dist(x1, y1, x2, y2) {
+    let dx = Math.abs(x1 - x2);
+    let dy = Math.abs(y1 - y2);
+    let d = (dx <= dy ? dx : dy);
+    let s = (dx >= dy ? dx : dy) - d;
+    return d + s;
+}
+
 function _give() {
     let name;
     document.querySelectorAll("input[type=radio]").forEach(e => { if (e.checked) { name = e.nextElementSibling.innerText; } });
@@ -203,7 +211,7 @@ function give() {
     let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
     <div class="modal-ipt-radio">
-    ${srv.tanks.map(t => { if(t.name==mytank.name){return ``;} return `<div><input name="direction" type="radio"><label>${t.name}</label></div>` }).join("\n")}
+    ${srv.tanks.map(t => { if(t.name==mytank.name || dist(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range){return ``;} return `<div><input name="direction" type="radio"><label>${t.name}</label></div>` }).join("\n")}
     </div>
     <div class="modal-ipt-number">
     <input type="number" value="1" min="1" max="${mytank.ap}">
@@ -236,7 +244,7 @@ function attack() {
     let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
     <div class="modal-ipt-radio">
-    ${srv.tanks.map(t => { if(t.name==mytank.name){return``;}return `<div><input name="direction" type="radio"><label>${t.name}</label></div>` }).join("\n")}
+    ${srv.tanks.map(t => { if(t.name==mytank.name || dist(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range){return``;}return `<div><input name="direction" type="radio"><label>${t.name}</label></div>` }).join("\n")}
     </div>
     <div class="modal-ipt-number">
     <input type="number" value="1" min="1" max="${mytank.ap}">
