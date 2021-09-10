@@ -168,10 +168,10 @@ function move() {
     let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
     <div class="modal-ipt-radio">
-        <div><input name="direction" type="radio" checked=""><label>Up</label></div>
-        <div><input name="direction" type="radio"><label>Right</label></div>
-        <div><input name="direction" type="radio"><label>Down</label></div>
-        <div><input name="direction" type="radio"><label>Left</label></div>
+        <div><input name="radioOption" type="radio" checked=""><label>Up</label></div>
+        <div><input name="radioOption" type="radio"><label>Right</label></div>
+        <div><input name="radioOption" type="radio"><label>Down</label></div>
+        <div><input name="radioOption" type="radio"><label>Left</label></div>
     </div>
     <div class="modal-ipt-number">
         <input type="number" value="1" min="1" max="${mytank.ap}">
@@ -183,12 +183,10 @@ function move() {
     `;
 }
 
-function dist(x1, y1, x2, y2) {
+function distance(x1, y1, x2, y2) {
     let dx = Math.abs(x1 - x2);
     let dy = Math.abs(y1 - y2);
-    let d = (dx <= dy ? dx : dy);
-    let s = (dx >= dy ? dx : dy) - d;
-    return d + s;
+    return (dx >= dy ? dx : dy);
 }
 
 function _give() {
@@ -212,7 +210,7 @@ function give() {
     let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
     <div class="modal-ipt-radio">
-    ${srv.tanks.map(t => { if(t.name==mytank.name || dist(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range){return ``;} return `<div><input name="direction" type="radio"><label>${t.name}</label></div>` }).join("\n")}
+    ${srv.tanks.map(t => { if(t.name==mytank.name || distance(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range){return ``;} return `<div><input name="radioOption" type="radio"><label>${t.name}</label></div>` }).join("\n")}
     </div>
     <div class="modal-ipt-number">
     <input type="number" value="1" min="1" max="${mytank.ap}">
@@ -222,7 +220,7 @@ function give() {
     <button class="modal-button" onclick="removeModal()">Cancel</button>
     </div>
     `;
-    modalDiv.querySelector("input[name=direction]").checked = true;
+    modalDiv.querySelector("input[name=radioOption]").checked = true;
 }
 
 function _attack(){
@@ -246,7 +244,7 @@ function attack() {
     let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
     <div class="modal-ipt-radio">
-    ${srv.tanks.map(t => { if(t.name==mytank.name || dist(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range){return``;}return `<div><input name="direction" type="radio"><label>${t.name}</label></div>` }).join("\n")}
+    ${srv.tanks.map(t => { if(t.name==mytank.name || distance(mytank.pos.x, mytank.pos.y, t.pos.x, t.pos.y) > mytank.range){return``;}return `<div><input name="radioOption" type="radio"><label>${t.name}</label></div>` }).join("\n")}
     </div>
     <div class="modal-ipt-number">
     <input type="number" value="1" min="1" max="${mytank.ap}">
@@ -256,7 +254,7 @@ function attack() {
     <button class="modal-button" onclick="removeModal()">Cancel</button>
     </div>
     `;
-    modalDiv.querySelector("input[name=direction]").checked = true;
+    modalDiv.querySelector("input[name=radioOption]").checked = true;
 }
 
 function _upgrade(){
@@ -283,4 +281,35 @@ function upgrade() {
         <button class="modal-button" onclick="removeModal()">Cancel</button>
     </div>
     `;
+}
+
+function _vote(){
+    let name;
+    document.querySelectorAll("input[type=radio]").forEach(e => { if (e.checked) { name = e.nextElementSibling.innerText; } });
+    if (name == undefined){return;}
+    let amount = document.querySelector("div.modal-ipt-number input").value;
+    amount = Number(amount);
+    srv.sock.send(JSON.stringify({
+        type: "update",
+        data: {
+            type: "attack",
+            name,
+            amount
+        }
+    }));
+    removeModal();
+}
+
+function vote(){
+    let { modalDiv, bkgDiv } = makeModal();
+    modalDiv.innerHTML = `
+    <div class="modal-ipt-radio">
+    ${srv.tanks.map(t => { if(t.name==mytank.name){return``;}return `<div><input name="radioOption" type="radio"><label>${t.name}</label></div>` }).join("\n")}
+    </div>
+    <div class="modal-buttons">
+    <button class="modal-button" onclick="_vote()">Vote</button>
+    <button class="modal-button" onclick="removeModal()">Cancel</button>
+    </div>
+    `;
+    modalDiv.querySelector("input[name=radioOption]").checked = true;
 }

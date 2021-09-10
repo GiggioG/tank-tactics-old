@@ -38,7 +38,6 @@ class Tank {
             this.prevNonce = this.nonce;
             let selector = (mytank ? "div#mytank-info" : "div#othertank-info");
             this.show();
-            console.log(srv.myUsername);
             select(selector).elt.innerHTML = (`
                 <div class="playerName" style="color: ${this.color}">${this.name}</div>
                 ${srv.myTankDead && (this.name == srv.myUsername)?"":`
