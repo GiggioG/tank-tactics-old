@@ -5,6 +5,7 @@
     "main": "server/server.js",
     "scripts": {
         "start": "node server/server.js",
+        "devstart": "nodemon server/server.js -w server/server.js",
         "eraseGame": "scripts\\erasegame.bat",
         "resetGame": "scripts\\resetgame.bat",
         "createGame": "node scripts/creategame.js"
@@ -22,7 +23,9 @@
     "author": "Gigo_G",
     "license": "ISC",
     "dependencies": {
-        "nodemon": "^2.0.12",
         "ws": "^8.2.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.12"
     }
 }

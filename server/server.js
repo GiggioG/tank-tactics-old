@@ -51,6 +51,9 @@ wss.on("connection", socket => {
                 for (let i = 0; i < message.data.tanks.length; i++) {
                     message.data.tanks[i].splice(1, 1);
                 }
+                if (db.tanks[userIdx][3] == 0) {
+                    message.data.vote = db.votes[db.tanks[userIdx][0]] || null;
+                }
                 socket.send(JSON.stringify(message));
                 return;
             }
@@ -88,6 +91,20 @@ function giveAliveAP() {
             sendUpdate(el[0], el[4], el[5] + 1, el[3][0], el[3][1], el[6]);
         }
     });
+    let candidates = {}
+    for (let voter in db.votes) {
+        if (candidates[db.votes[voter]]) {
+            candidates[db.votes[voter]]++;
+        } else {
+            candidates[db.votes[voter]] = 1;
+        }
+    }
+    for (let candidate in candidates) {
+        if (candidates[candidate] >= 3) {
+            const cT = getUser(candidate);
+            sendUpdate(cT[0], cT[4], cT[5] + 1, cT[3][0], cT[3][1], cT[6]);
+        }
+    }
 }
 
 {
@@ -175,6 +192,15 @@ function sendDeath(user) {
         }
     });
     wss.clients.forEach(s => s.send(msg));
+}
+
+function confirmVote(sock, candidate) {
+    sock.send(JSON.stringify({
+        type: "vote-confirm",
+        data: {
+            candidate
+        }
+    }));
 }
 
 function update(username, update, sock) {
@@ -268,6 +294,11 @@ function update(username, update, sock) {
     } else if (update.type == "vote") {
         if (user[4] > 0) { updateError(sock, "voting", "You can't vote when you're alive."); return; }
 
+        let db = JSON.parse(fs.readFileSync("server/db.json"));
+        db.votes[user[0]] = update.name;
+        fs.writeFileSync("server/db.json", JSON.stringify(db));
+
+        confirmVote(sock, update.name);
     }
 }
 

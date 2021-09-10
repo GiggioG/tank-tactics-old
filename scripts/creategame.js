@@ -118,6 +118,7 @@ const main = async() => {
 
     let db = {
         "tanks": [],
+        votes: {},
         boardSize,
         gameDayMillis,
         gameStartedDatetimeMillis

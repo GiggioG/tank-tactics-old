@@ -4,6 +4,7 @@
     --bg-color: #272822;
     --pos-color: #be6510;
     --rng-color: #7c7c15;
+    --blink-color: red;
 }
 
 html,
@@ -191,4 +192,38 @@ button.modal-button {
 .modal-h {
     color: white;
     text-align: center;
+}
+
+div.player-vote-div {
+    margin-bottom: 10px;
+}
+
+span.player-vote {
+    color: white;
+    text-align: center;
+}
+
+@keyframes blinkColor {
+    to {
+        color: var(--blink-color);
+    }
+}
+
+@keyframes blinkBkg {
+    from {
+        background-color: white;
+    }
+    to {
+        background-color: var(--blink-color);
+    }
+}
+
+span.player-vote.player-vote-noone::after {
+    content: "no one";
+    animation: blinkColor 500ms steps(2, end) infinite;
+}
+
+button.vote-button-noone {
+    background-color: white;
+    animation: blinkBkg 500ms steps(2, end) infinite;
 }

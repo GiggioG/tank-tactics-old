@@ -64,8 +64,11 @@ class Tank {
                 </div>
                 `}
                 ${this.name==srv.myUsername?(srv.myTankDead?`
+                <div class="player-vote-div">
+                    <span class="player-vote${srv.myVote==null?" player-vote-noone":""}">You voted for: ${srv.myVote!=null?srv.myVote:""}</span>
+                </div>
                 <div>
-                    <button onclick="vote()" title="Vote in the Jury">🗳 Vote</button>
+                    <button ${srv.myVote==null?"class=\"vote-button-noone\"":""}onclick="vote()" title="Vote in the Jury">🗳 Vote</button>
                 </div>
                 `:`
                 <div>

@@ -38,11 +38,23 @@ class Server {
                     selectedTankIdx = null;
                 }
             }
+        } else if (msg.type == "vote-confirm") {
+            this.myVote = msg.data.candidate;
+            if (!this.tanks[this.myTankIdx].nonce2) { this.tanks[this.myTankIdx].nonce2 = 0; }
+            this.tanks[this.myTankIdx].nonce2++;
+            let { modalDiv, bkgDiv } = makeModal();
+            modalDiv.innerHTML = `
+                <h1 class="modal-h">Vote confirmed!</h1>
+                <h3 class="modal-h">Confirmed vote for ${msg.data.candidate}.</h3>
+                <div class="modal-buttons">
+                    <button class="modal-button" onclick="removeModal()">OK</button>
+                </div>
+            `;
         } else if (msg.type == "update-error") {
             let { modalDiv, bkgDiv } = makeModal();
             modalDiv.innerHTML = `
-                <h1 class="updateError-modal-h">Error while ${msg.data.action}:</h1>
-                <h3 class="updateError-modal-h">${msg.data.message}</h3>
+                <h1 class="modal-h">Error while ${msg.data.action}:</h1>
+                <h3 class="modal-h">${msg.data.message}</h3>
                 <div class="modal-buttons">
                     <button class="modal-button" onclick="removeModal()">OK</button>
                 </div>
@@ -78,6 +90,9 @@ class Server {
             this.myTankIdx = data.data.tanks.findIndex(t => t[0] == this.myUsername);
             this.myTankDead = this.tanks[this.myTankIdx].hp <= 0;
             this.boardSize = data.data.boardSize;
+            if (this.myTankDead) {
+                this.myVote = data.data.vote;
+            }
             started = true;
         } else if (data.type == "auth-bad") {
             badAuth(auth);
