@@ -37,7 +37,7 @@ You can give [AP](#action-points-ap) to players in your range. You give 1 AP per
 You can upgrade your [range](#range). You increase your range by 1 for every 2 [AP](#action-points-ap) used.
 
 ## Jury
-When a player dies, they join the jury. Everyone in the jury votes every 24 hours and when the vote ends, every player with 3+ votes gets one extra [AP](#action-points-ap). If you don't vote, your vote will be wasted.
+When a player dies, they join the jury. Everyone in the jury votes every in-game day and when the vote ends, every player with 3+ votes gets one extra [AP](#action-points-ap). If you don't vote, your vote will be wasted.
 
 ## Spectating
 You can spectate. This means watching the game without being logged in.
