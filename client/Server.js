@@ -28,8 +28,6 @@ class Server {
         } else if (msg.type == "update-death") {
             if (msg.data.user == this.myUsername) { location.reload(); }
             removeModal();
-            this.tanks = this.tanks.filter(t => t.name != msg.data.user);
-            this.myTankDead = true;
             if (selectedTankIdx != null) {
                 let idx = this.tanks.findIndex(t => t.name == msg.data.user);
                 if (idx < selectedTankIdx) {
@@ -38,6 +36,7 @@ class Server {
                     selectedTankIdx = null;
                 }
             }
+            this.tanks = this.tanks.filter(t => t.name != msg.data.user);
         } else if (msg.type == "vote-confirm") {
             this.myVote = msg.data.candidate;
             if (!this.tanks[this.myTankIdx].nonce2) { this.tanks[this.myTankIdx].nonce2 = 0; }
@@ -50,6 +49,8 @@ class Server {
                     <button class="modal-button" onclick="removeModal()">OK</button>
                 </div>
             `;
+        } else if (msg.type == "someone-won") {
+            location.reload();
         } else if (msg.type == "update-error") {
             let { modalDiv, bkgDiv } = makeModal();
             modalDiv.innerHTML = `

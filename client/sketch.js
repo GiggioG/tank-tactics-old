@@ -20,6 +20,8 @@ async function setup() {
     xInc = width / srv.boardSize;
     yInc = height / srv.boardSize;
     mytank = srv.tanks[srv.myTankIdx];
+    if (srv.winner) { selectedTankIdx = srv.winnerIdx; }
+    srv.tanks[selectedTankIdx].selected = true;
     return;
 }
 
@@ -41,7 +43,6 @@ function draw() {
             (2 * mytank.range + 1) * xInc, (2 * mytank.range + 1) * yInc);
     }
     srv.tanks.forEach(t => t.show());
-    if (srv.winner) { selectedTankIdx = srv.winnerIdx; }
     mytank.info(true);
     if (selectedTankIdx != null) {
         srv.tanks[selectedTankIdx].info();

@@ -16,6 +16,8 @@ async function setup() {
     started = true;
     xInc = width / srv.boardSize;
     yInc = height / srv.boardSize;
+    if (srv.winner) { selectedTankIdx = srv.winnerIdx; }
+    srv.tanks[selectedTankIdx].selected = true;
     return;
 }
 
@@ -41,6 +43,7 @@ function draw() {
 }
 
 function mousePressed() {
+    if (srv.winner) { return; }
     let x = Math.floor(mouseX / xInc);
     let y = Math.floor(mouseY / yInc);
     if (x < 0 || x >= srv.boardSize) { return; }

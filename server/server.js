@@ -210,6 +210,16 @@ function sendDeath(user) {
     wss.clients.forEach(s => s.send(msg));
 }
 
+function sendWin(user) {
+    let msg = JSON.stringify({
+        type: "someone-won",
+        data: {
+            winner: user
+        }
+    });
+    wss.clients.forEach(s => s.send(msg));
+}
+
 function confirmVote(sock, candidate) {
     sock.send(JSON.stringify({
         type: "vote-confirm",
@@ -305,6 +315,10 @@ function update(username, update, sock) {
         sendUpdate(name, other[4] - amount, other[5], dx, dy, other[6]);
         if (other[4] - amount <= 0) {
             sendDeath(name);
+        }
+        if (getWinner()) {
+            console.log(`${user[0]} won!`);
+            sendWin(user);
         }
     } else if (update.type == "upgrade") {
         if (user[4] <= 0) { updateError(sock, "upgrading your range", "You can't upgrade your range when you're dead."); return; }

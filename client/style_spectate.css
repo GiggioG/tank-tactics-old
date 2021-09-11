@@ -4,6 +4,7 @@
     --bg-color: #272822;
     --pos-color: #be6510;
     --rng-color: #7c7c15;
+    --blink-color: red;
 }
 
 html,
@@ -117,4 +118,19 @@ div#accountMenu {
     position: absolute;
     left: 0px;
     bottom: 0px;
+}
+
+.modal-h {
+    color: white;
+    text-align: center;
+}
+
+@keyframes blinkColor {
+    to {
+        color: var(--blink-color);
+    }
+}
+
+.blinkColor {
+    animation: blinkColor 500ms steps(2, end) infinite;
 }
