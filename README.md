@@ -12,6 +12,8 @@ Tank Tactics is an implementation of the game "Tank Turn Tactics" from [this GDC
 
 Each player has 3 stats. They are the following:
 
+<h3><i class="stat-icon fas fa-heart"></i>Health (HP)</h3>
+
 # Hosting the game
 
 lorem ipsum
