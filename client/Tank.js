@@ -40,49 +40,52 @@ class Tank {
         this.show();
         let html = "";
         html += `<div class="playerName" style="color: ${this.color}">${this.name}</div>`;
-        if (mytank && (!srv.winner)) {
-            if (srv.myTankDead) {
-                html += `
-                    <div class="player-vote-div">
-                        <span class="player-vote${srv.myVote==null?" player-vote-noone":""}">You voted for: ${srv.myVote!=null?srv.myVote:""}</span>
-                    </div>
-                    <div>
-                        <button ${srv.myVote==null?"class=\"vote-button-noone\"":""}onclick="vote()" title="Vote in the Jury">🗳 Vote</button>
-                    </div>
-                    `;
-            } else {
-                html += `
-                    <br>
-                    <div class="statIconContainer">
+        if (mytank && srv.myTankDead && (!srv.winner)) {
+            html += `
+                <div class="player-vote-div">
+                    <span class="player-vote${srv.myVote==null?" player-vote-noone":""}">You voted for: ${srv.myVote!=null?srv.myVote:""}</span>
+                </div>
+                <div>
+                    <button ${srv.myVote==null?"class=\"vote-button-noone\"":""}onclick="vote()" title="Vote in the Jury">🗳 Vote</button>
+                </div>
+            `;
+        }
+
+        if (this.hp > 0) {
+            html += `
+                <br>
+                <div class="statIconContainer">
                     ${"<i class=\"stat-icon fas fa-bolt\"></i>".repeat(this.ap)}
-                    </div>
-                    <br>
-                    <div class="statIconContainer">
+                </div>
+                <br>
+                <div class="statIconContainer">
                     ${"<i class=\"stat-icon fas fa-heart\"></i>".repeat(this.hp)}
-                    </div>
-                    <br>
-                    <div class="playerStatTableContainer">
+                </div>
+                <br>
+                <div class="playerStatTableContainer">
                     <table class="playerStatTable"><tb>
-                        <tr>
-                            <td> <i class="stat-icon fas fa-crosshairs"></i> </td>
-                            <td> <span class="playerStat">${this.pos.x}, ${this.pos.y}</span> </td>
-                        </tr>
-                        <tr>
-                            <td> <i class="stat-icon fas fa-bullseye"></i> </td>
-                            <td> <span class="playerStat">${this.range}</span> </td>
-                        </tr>
+                    <tr>
+                        <td> <i class="stat-icon fas fa-crosshairs"></i> </td>
+                        <td> <span class="playerStat">${this.pos.x}, ${this.pos.y}</span> </td>
+                    </tr>
+                    <tr>
+                        <td> <i class="stat-icon fas fa-bullseye"></i> </td>
+                        <td> <span class="playerStat">${this.range}</span> </td>
+                    </tr>
                     </tb></table>
-                    </div>
-                `;
-                html += `
-                    <div>
-                        <button onclick="move()" title="Move">🡆</button>
-                        <button onclick="give()" title="Give AP">✋</button>
-                        <button onclick="attack()" title="Attack">⚔️</button>
-                        <button onclick="upgrade()" title="Upgrade range">◎</button>
-                    </div>
-                `;
-            }
+                </div>
+            `;
+        }
+
+        if (mytank && (!srv.myTankDead) && (!srv.winner)) {
+            html += `
+                <div>
+                    <button onclick="move()" title="Move">🡆</button>
+                    <button onclick="give()" title="Give AP">✋</button>
+                    <button onclick="attack()" title="Attack">⚔️</button>
+                    <button onclick="upgrade()" title="Upgrade range">◎</button>
+                </div>
+            `;
         }
         if (srv.winner && this.name == srv.winner) {
             html += `
