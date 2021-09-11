@@ -66,4 +66,4 @@ The web server should be on port 8080 and the websocket server on port 9090.
 
 ### Playing the game
 
-Tell the players to go to `<the url of your server>:8080`. Then they can enter their username and password and log in. They can also [spectate](spectating).
+Tell the players to go to `<the url of your server>:8080`. Then they can enter their username and password and log in. They can also [spectate](#spectating).
