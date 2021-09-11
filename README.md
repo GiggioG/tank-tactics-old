@@ -17,16 +17,29 @@ Health (or HP) is the amount of health a player has left. Every player starts wi
 Action points (or AP) are used to [do everything in this game](#actions). Every player starts with one. You can give AP to other players. Once every in-game day, every alive player gets one more AP. You can also obtain AP through [the Jury](#jury).
 
 ### Range
-Range is the distance where you can't interact with players further than that distance. Every player's range starts at 2. Range can be [upgraded](#Upgrading_Range). You can see your range as the yellow squares around you.
+Range is the distance where you can't interact with players further than that distance. Every player's range starts at 2. Range can be [upgraded](#upgrading-your-range). You can see your range as the yellow squares around you.
 
 ## Actions
 There are 4 actions that are able to do in the game, and they are the following:
 
-### 🡆 Moving
+### Moving
 Moving is changing your position. You are able to move one square in any direction (without the diagonals) per [AP](#action-points-ap).
 
-### ⚔️ Attacking
+### Attacking
 Attacking is reducing another player's [HP](#health-hp). You can only attack in your [range](#range). You remove one HP from your opponent per [AP](#action-points-ap) used.
+
+### Giving AP
+You can give [AP](#action-points-ap) to players in your range. You give 1 AP per AP.
+
+### Upgrading Your Range
+You can upgrade your [range](#range). You increase your range by 1 for every 2 [AP](#action-points-ap) used.
+
+## Jury
+When a player dies, they join the jury. Everyone in the jury votes every 24 hours and when the vote ends, every player with 3+ votes gets one extra [AP](#action-points-ap). If you don't vote, your vote will be wasted.
+
+## Spectating
+You can spectate. This means watching the game without being logged in.
+
 # Hosting the game
 
 lorem ipsum
