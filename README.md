@@ -3,8 +3,8 @@ Tank Tactics is an implementation of the game "Tank Turn Tactics" from [this GDC
 
 | README Links          |      Description          |
 | :-------------------- | :-----------------------: |
-| [Game mechanics](#Game_mechanics)|The rules of the game.|
-| [Hosting the game](#Hosting_the_game)|How to host and enter the game.|
+| [Game mechanics](#game-mechanics)|The rules of the game.|
+| [Hosting the game](#hosting-the-game)|How to host and enter the game.|
 
 # Game mechanics
 
