@@ -23,6 +23,7 @@
     "author": "Gigo_G",
     "license": "ISC",
     "dependencies": {
+        "p5": "^1.4.0",
         "ws": "^8.2.0"
     },
     "devDependencies": {

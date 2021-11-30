@@ -9,6 +9,14 @@ if (!fs.existsSync("server/db.json") || !fs.existsSync("server/db_initial.json")
 }
 const gameDayMillis = JSON.parse(fs.readFileSync("server/db.json")).gameDayMillis;
 let websrv = http.createServer((req, res) => {
+    if (req.url.startsWith("/lib/")) {
+        if (req.url == "/lib/p5.js") {
+            fs.createReadStream("./node_modules/p5/lib/p5.min.js")
+                .on("data", d => res.write(d))
+                .on("end", _ => res.end());
+        }
+        return;
+    }
     if (req.url == '/') { req.url = "/index.html" }
     if (!fs.existsSync('./client/' + path.posix.normalize(req.url))) {
         res.writeHead(404);
