@@ -41,13 +41,23 @@ p {
 
 .stat-icon {
     padding: 5px 3px 3px 5px;
-    margin: 5px 10px 0 0;
+    /* vvv from fontawesome vvv */
+    width: 1em;
+    overflow: visible;
+    height: 1em;
+    display: inline-block;
+    font-size: inherit;
+    vertical-align: -0.125em;
+    /* ^^^ from fontawesome ^^^ */
 }
 
 .fa-bolt {
     color: var(--ap-color);
     border: 2px solid var(--ap-color);
     border-radius: 100%;
+    /* vvv from fontawesome vvv */
+    width: 0.625em;
+    /* ^^^ from fontawesome ^^^ */
 }
 
 .fa-heart {
