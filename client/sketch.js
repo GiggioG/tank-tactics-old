@@ -12,8 +12,8 @@ async function setup() {
     frameRate(30);
     srv = new Server();
     background(255);
-    if (localStorage.getItem("good-auth")) {
-        await srv.connect(localStorage.getItem("good-auth"))
+    if (localStorage.getItem("tank_tactics_good-auth")) {
+        await srv.connect(localStorage.getItem("tank_tactics_good-auth"))
     } else {
         await srv.connect(await logIn());
     }
@@ -107,7 +107,7 @@ const logIn = _ => new Promise(async(res, rej) => {
 })
 
 function logOut() {
-    localStorage.removeItem("good-auth");
+    localStorage.removeItem("tank_tactics_good-auth");
     location.reload();
 }
 
@@ -116,12 +116,12 @@ function spectate() {
 }
 
 function badAuth(auth) {
-    if (localStorage.getItem("good-auth") == auth) {
-        localStorage.removeItem("good-auth");
+    if (localStorage.getItem("tank_tactics_good-auth") == auth) {
+        localStorage.removeItem("tank_tactics_good-auth");
         location.reload();
         return 0;
     }
-    localStorage.removeItem("good-auth");
+    localStorage.removeItem("tank_tactics_good-auth");
     let { modalDiv, bkgDiv } = makeModal();
     modalDiv.innerHTML = `
         <h1 class="modal-h">Wrong username or password.</h1>

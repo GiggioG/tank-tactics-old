@@ -74,7 +74,7 @@ class Server {
         this.sock.onmessage = d => { this.parseMsg(JSON.parse(d.data)) };
         console.log(data);
         if (data.type == "auth-good") {
-            localStorage.setItem("good-auth", auth);
+            localStorage.setItem("tank_tactics_good-auth", auth);
             data.data.tanks.forEach(tnk => {
                 this.tanks_real.push(new Tank(tnk[0], tnk[1], new Coords(tnk[2][0], tnk[2][1]), tnk[3], tnk[4], tnk[5], tnk[6]));
                 this.tanks.push(new Proxy(this.tanks_real[this.tanks_real.length - 1], {
