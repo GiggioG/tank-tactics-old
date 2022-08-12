@@ -307,7 +307,7 @@ function update(username, update, sock) {
             return d + s;
         }
 
-        const { name, amount } = update;
+        let { name, amount } = update;
 
         if (user[5] < amount) { updateError(sock, "attacking", "You do not have enough AP to attack that much."); return; }
         if (user[0] == name) { updateError(sock, "attacking", "You can't attack yourself."); return; }
@@ -319,6 +319,7 @@ function update(username, update, sock) {
         let [dx, dy] = other[3];
         if (dist(ux, uy, dx, dy) > user[6]) { updateError(sock, "attacking", `Player ${name} is out of you range.`); return; }
 
+        if(amount > other[4]){amount = other[4];}
         sendUpdate(username, user[4], user[5] - amount, ux, uy, user[6]);
         sendUpdate(name, other[4] - amount, other[5], dx, dy, other[6]);
         if (other[4] - amount <= 0) {

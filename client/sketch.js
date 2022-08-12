@@ -277,7 +277,7 @@ function attack() {
     ${possibleHTML}
     </div>
     <div class="modal-ipt-number">
-    <input type="number" value="1" min="1" max="${mytank.ap}">
+    <input type="number" value="1" min="1" max="${min(mytank.ap, 3)}">
     </div>
     <div class="modal-buttons">
     <button class="modal-button" onclick="_attack()">Attack</button>
