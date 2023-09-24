@@ -1,7 +1,9 @@
-# tank-tactics
+## THIS IS THE OLD VERSION. THE NEW (REWRITTEN FROM SCRATCH) VERSION IS [HERE](https://github.com/GiggioG/tank-tactics).
+
+# tank-tactics-old
 Tank Tactics is an implementation of the game "Tank Turn Tactics" from [this GDC talk](https://youtu.be/t9WMNuyjm4w). I made it as close as possible to the game described in the talk, so I recommend watching it and learning the rules that way. For the people who don't want to do that, I have this guide for them.
 
-# THIS APP IS PROBABLY INSECURE. IF YOU GET HACKED I HAVE NO RESPONSABILITY ABOUT YOUR DATA/PC/WHATEVER. USE AT YOUR OWN RISC. I ADVISE YOU TO PLAY ONLY WITH PEOPLE YOU TRUST AND MAKE SURE ONLY THEY CAN ACCESS THE APP.
+## THIS APP IS PROBABLY INSECURE. IF YOU GET HACKED I HAVE NO RESPONSABILITY ABOUT YOUR DATA/PC/WHATEVER. USE AT YOUR OWN RISC. I ADVISE YOU TO PLAY ONLY WITH PEOPLE YOU TRUST AND MAKE SURE ONLY THEY CAN ACCESS THE APP.
 
 | README Links          |      Description          |
 | :-------------------- | :-----------------------: |
